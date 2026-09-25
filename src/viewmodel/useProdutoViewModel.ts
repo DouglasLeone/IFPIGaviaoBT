@@ -3,6 +3,7 @@ import {
     CardapioService,
     QUANTIDADE_MINIMA,
 } from "@/model/services/CardapioService";
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { formatarPreco } from "./formatarPreco";
 
@@ -17,6 +18,7 @@ export type ProdutoState = {
 export type ProdutoActions = {
   incrementarQuantidade: () => void;
   decrementarQuantidade: () => void;
+  voltar: () => void;
 };
 
 export function useProdutoViewModel(
@@ -57,11 +59,15 @@ export function useProdutoViewModel(
     setQuantidade((q) => service.ajustarQuantidade(q - 1));
   }
 
+  function voltar() {
+    router.back();
+  }
+
   const precoFormatado = produto ? formatarPreco(produto.preco) : "";
 
   const state : ProdutoState = { produto, quantidade, precoFormatado, carregando, erro };
   
-  const actions : ProdutoActions = { incrementarQuantidade, decrementarQuantidade };
+  const actions : ProdutoActions = { incrementarQuantidade, decrementarQuantidade, voltar };
   
   return [state, actions];
 }

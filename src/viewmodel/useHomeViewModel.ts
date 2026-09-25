@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Categoria } from "@/model/entities/Categoria";
 import { CardapioService } from "@/model/services/CardapioService";
@@ -10,6 +11,7 @@ export type HomeState = {
 
 export type HomeActions = {
   carregarCategorias: () => Promise<void>;
+  abrirCategoria: (categoriaId: string) => void;
 };
 
 export function useHomeViewModel(): [ HomeState, HomeActions ] {
@@ -31,13 +33,17 @@ export function useHomeViewModel(): [ HomeState, HomeActions ] {
     }
   }
 
+  function abrirCategoria(categoriaId: string) {
+    router.push(`/category/${categoriaId}` as any);
+  }
+
   useEffect(() => {
     carregarCategorias();
   }, []);
 
   const state : HomeState = { categorias, carregando, erro };
 
-  const actions : HomeActions = { carregarCategorias };
+  const actions : HomeActions = { carregarCategorias, abrirCategoria };
 
   return [state, actions];
 }

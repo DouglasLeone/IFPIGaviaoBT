@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Produto } from "@/model/entities/Produto";
 import { CardapioService } from "@/model/services/CardapioService";
@@ -12,6 +13,8 @@ export type CategoriaState = {
 
 export type CategoriaActions = {
   formatarPreco: (valor: number) => string;
+  abrirProduto: (produtoId: string) => void;
+  voltar: () => void;
 };
 
 export function useCategoriaViewModel(
@@ -46,8 +49,16 @@ export function useCategoriaViewModel(
     carregarProdutos(categoriaId);
   }, [categoriaId]);
 
+  function abrirProduto(produtoId: string) {
+    router.push(`/item/${produtoId}` as any);
+  }
+
+  function voltar() {
+    router.back();
+  }
+
   const state: CategoriaState = { titulo, produtos, carregando, erro };
-  const actions: CategoriaActions = { formatarPreco };
+  const actions: CategoriaActions = { formatarPreco, abrirProduto, voltar };
 
   return [state, actions];
 }
