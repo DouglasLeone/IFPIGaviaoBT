@@ -13,8 +13,8 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const IMAGENS_CATEGORIAS: Record<string, ImageSourcePropType> = {
-  "categoria-comidas": require("@/assets/images/menu/categoria-comidas.png"),
-  "categoria-bebidas": require("@/assets/images/menu/categoria-bebidas.png"),
+  "categoria-comidas": require("../../assets/images/menu/categoria-comidas.png"),
+  "categoria-bebidas": require("../../assets/images/menu/categoria-bebidas.png"),
 };
 
 export default function HomeView() {
@@ -29,7 +29,7 @@ export default function HomeView() {
           <View style={styles.cabecalhoConteudo}>
             <View style={styles.logoLinha}>
               <Image
-                source={require("@/assets/images/menu/gaviao-logo.png")}
+                source={require("../../assets/images/menu/gaviao-logo.png")}
                 style={styles.logoGaviao}
                 resizeMode="contain"
               />
