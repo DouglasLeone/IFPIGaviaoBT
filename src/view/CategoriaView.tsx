@@ -1,6 +1,6 @@
 import { useCategoriaViewModel } from "@/viewmodel/useCategoriaViewModel";
 import { Ionicons } from "@expo/vector-icons";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import {
   ActivityIndicator,
   FlatList,
@@ -25,11 +25,10 @@ const IMAGENS_PRODUTOS: Record<string, ImageSourcePropType> = {
 };
 
 export default function CategoriaView() {
-  const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const [state, actions] = useCategoriaViewModel(Array.isArray(id) ? id[0] : id);
   const { titulo, produtos, carregando } = state;
-  const { formatarPreco } = actions;
+  const { formatarPreco, abrirProduto, voltar } = actions;
 
   return (
     <View style={styles.tela}>
@@ -40,7 +39,7 @@ export default function CategoriaView() {
             <TouchableOpacity
               activeOpacity={0.7}
               style={styles.botaoVoltar}
-              onPress={() => router.back()}
+              onPress={voltar}
             >
               <Ionicons name="chevron-back" size={24} color="#ffffff" />
               <Text style={styles.textoVoltar}>Início</Text>
@@ -72,7 +71,7 @@ export default function CategoriaView() {
             <TouchableOpacity
               activeOpacity={0.85}
               style={styles.cardItem}
-              onPress={() => router.push(`/item/${item.id}` as any)}
+              onPress={() => abrirProduto(item.id)}
             >
               <Image
                 source={IMAGENS_PRODUTOS[item.imagem]}

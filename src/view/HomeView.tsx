@@ -1,6 +1,5 @@
 import { useHomeViewModel } from "@/viewmodel/useHomeViewModel";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
 import {
   ActivityIndicator,
   Image,
@@ -19,8 +18,7 @@ const IMAGENS_CATEGORIAS: Record<string, ImageSourcePropType> = {
 };
 
 export default function HomeView() {
-  const router = useRouter();
-  const [state] = useHomeViewModel();
+  const [state, actions] = useHomeViewModel();
   const { categorias, carregando } = state;
 
   return (
@@ -60,7 +58,7 @@ export default function HomeView() {
                 key={cat.id}
                 activeOpacity={0.88}
                 style={[styles.cardCategoria, { borderColor: cat.corBorda }]}
-                onPress={() => router.push(`/category/${cat.id}` as any)}
+                onPress={() => actions.abrirCategoria(cat.id)}
               >
                 <Image
                   source={IMAGENS_CATEGORIAS[cat.imagem]}

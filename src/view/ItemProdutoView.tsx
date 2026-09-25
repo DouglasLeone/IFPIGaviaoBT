@@ -1,6 +1,6 @@
 import { useProdutoViewModel } from "@/viewmodel/useProdutoViewModel";
 import { Ionicons } from "@expo/vector-icons";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import {
   ActivityIndicator,
   Image,
@@ -26,11 +26,10 @@ const IMAGENS_PRODUTOS: Record<string, ImageSourcePropType> = {
 };
 
 export default function ItemProdutoView() {
-  const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const [ state, actions ] = useProdutoViewModel(Array.isArray(id) ? id[0] : id);
   const { produto, quantidade, precoFormatado, carregando } = state;
-  const { incrementarQuantidade, decrementarQuantidade } = actions;
+  const { incrementarQuantidade, decrementarQuantidade, voltar } = actions;
 
   return (
     <View style={styles.tela}>
@@ -41,7 +40,7 @@ export default function ItemProdutoView() {
             <TouchableOpacity
               activeOpacity={0.7}
               style={styles.botaoVoltar}
-              onPress={() => router.back()}
+              onPress={voltar}
             >
               <Ionicons name="chevron-back" size={24} color="#ffffff" />
               <Text style={styles.textoVoltar}>Voltar</Text>
@@ -133,7 +132,7 @@ export default function ItemProdutoView() {
             <TouchableOpacity
               activeOpacity={0.88}
               style={styles.btnVoltarCardapio}
-              onPress={() => router.back()}
+              onPress={voltar}
             >
               <Text style={styles.textoBtnVoltar}>Voltar ao Cardápio</Text>
             </TouchableOpacity>
