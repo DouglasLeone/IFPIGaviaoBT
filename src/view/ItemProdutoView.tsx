@@ -1,4 +1,4 @@
-import { useProdutoViewModel } from "@/viewmodel/useProdutoViewModel";
+import { makeProdutoViewModel } from "@/di/produtoFactory";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
 import {
@@ -27,7 +27,7 @@ const IMAGENS_PRODUTOS: Record<string, ImageSourcePropType> = {
 
 export default function ItemProdutoView() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const [ state, actions ] = useProdutoViewModel(Array.isArray(id) ? id[0] : id);
+  const [ state, actions ] = makeProdutoViewModel(Array.isArray(id) ? id[0] : id);
   const { produto, quantidade, precoFormatado, carregando } = state;
   const { incrementarQuantidade, decrementarQuantidade, voltar } = actions;
 

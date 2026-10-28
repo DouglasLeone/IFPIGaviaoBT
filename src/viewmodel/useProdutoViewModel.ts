@@ -1,11 +1,10 @@
-import { Produto } from "@/model/entities/Produto";
-import {
-    CardapioService,
-    QUANTIDADE_MINIMA,
-} from "@/model/services/CardapioService";
-import { router } from "expo-router";
 import { useEffect, useState } from "react";
+import { Produto } from "@/model/entities/Produto";
+import { INavegacaoService } from "@/model/services/INavegacaoService";
+import { QUANTIDADE_MINIMA } from "@/model/rules/Quantidade";
+import { IMenuUseCases } from "@/usecase/IMenuUseCases";
 import { formatarPreco } from "./formatarPreco";
+import { mensagemDeErro } from "./mensagemDeErro";
 
 export type ProdutoState = {
   produto: Produto | null;
@@ -22,14 +21,14 @@ export type ProdutoActions = {
 };
 
 export function useProdutoViewModel(
+  menuUseCases: IMenuUseCases,
+  navegacao: INavegacaoService,
   produtoId?: string
 ): [ ProdutoState, ProdutoActions ] {
   const [produto, setProduto] = useState<Produto | null>(null);
   const [quantidade, setQuantidade] = useState(QUANTIDADE_MINIMA);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
-
-  const service = new CardapioService();
 
   useEffect(() => {
     if (!produtoId) return;
@@ -38,36 +37,35 @@ export function useProdutoViewModel(
       try {
         setCarregando(true);
         setErro(null);
-        const resultado = await service.buscarProduto(id);
-        setProduto(resultado);
-      } catch (err: any) {
+        setProduto(await menuUseCases.buscarProdutoPorId(id));
+      } catch (err) {
         setProduto(null);
-        setErro(err.message);
+        setErro(mensagemDeErro(err, "Ocorreu um erro inesperado ao carregar o item."));
       } finally {
         setCarregando(false);
       }
     }
 
     carregarProduto(produtoId);
-  }, [produtoId]);
+  }, [produtoId, menuUseCases]);
 
   function incrementarQuantidade() {
-    setQuantidade((q) => service.ajustarQuantidade(q + 1));
+    setQuantidade((q) => menuUseCases.ajustarQuantidade(q + 1));
   }
 
   function decrementarQuantidade() {
-    setQuantidade((q) => service.ajustarQuantidade(q - 1));
+    setQuantidade((q) => menuUseCases.ajustarQuantidade(q - 1));
   }
 
   function voltar() {
-    router.back();
+    navegacao.voltar();
   }
 
   const precoFormatado = produto ? formatarPreco(produto.preco) : "";
 
-  const state : ProdutoState = { produto, quantidade, precoFormatado, carregando, erro };
-  
-  const actions : ProdutoActions = { incrementarQuantidade, decrementarQuantidade, voltar };
-  
+  const state: ProdutoState = { produto, quantidade, precoFormatado, carregando, erro };
+
+  const actions: ProdutoActions = { incrementarQuantidade, decrementarQuantidade, voltar };
+
   return [state, actions];
 }

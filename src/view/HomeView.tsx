@@ -1,4 +1,4 @@
-import { useHomeViewModel } from "@/viewmodel/useHomeViewModel";
+import { makeHomeViewModel } from "@/di/homeFactory";
 import { Ionicons } from "@expo/vector-icons";
 import {
   ActivityIndicator,
@@ -18,7 +18,7 @@ const IMAGENS_CATEGORIAS: Record<string, ImageSourcePropType> = {
 };
 
 export default function HomeView() {
-  const [state, actions] = useHomeViewModel();
+  const [state, actions] = makeHomeViewModel();
   const { categorias, carregando } = state;
 
   return (

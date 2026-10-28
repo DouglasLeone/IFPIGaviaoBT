@@ -1,8 +1,9 @@
-import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { Produto } from "@/model/entities/Produto";
-import { CardapioService } from "@/model/services/CardapioService";
+import { INavegacaoService } from "@/model/services/INavegacaoService";
+import { IMenuUseCases } from "@/usecase/IMenuUseCases";
 import { formatarPreco } from "./formatarPreco";
+import { mensagemDeErro } from "./mensagemDeErro";
 
 export type CategoriaState = {
   titulo: string;
@@ -18,18 +19,15 @@ export type CategoriaActions = {
 };
 
 export function useCategoriaViewModel(
+  menuUseCases: IMenuUseCases,
+  navegacao: INavegacaoService,
   categoriaId?: string
 ): [ CategoriaState, CategoriaActions ] {
   const [produtos, setProdutos] = useState<Produto[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
 
-  const service = new CardapioService();
-
-  const titulo =
-    categoriaId === "bebidas" ? "Bebidas"
-    : categoriaId === "comidas" ? "Comidas"
-    : "Cardápio";
+  const titulo = menuUseCases.obterTituloCategoria(categoriaId);
 
   useEffect(() => {
     if (!categoriaId) return;
@@ -38,23 +36,23 @@ export function useCategoriaViewModel(
       try {
         setCarregando(true);
         setErro(null);
-        setProdutos(await service.listarProdutosDaCategoria(id));
-      } catch (err: any) {
-        setErro(err.message);
+        setProdutos(await menuUseCases.listarProdutosPorCategoria(id));
+      } catch (err) {
+        setErro(mensagemDeErro(err, "Ocorreu um erro inesperado ao carregar os itens."));
       } finally {
         setCarregando(false);
       }
     }
 
     carregarProdutos(categoriaId);
-  }, [categoriaId]);
+  }, [categoriaId, menuUseCases]);
 
   function abrirProduto(produtoId: string) {
-    router.push(`/item/${produtoId}` as any);
+    navegacao.abrirProduto(produtoId);
   }
 
   function voltar() {
-    router.back();
+    navegacao.voltar();
   }
 
   const state: CategoriaState = { titulo, produtos, carregando, erro };

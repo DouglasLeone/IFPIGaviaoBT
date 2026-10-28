@@ -1,4 +1,4 @@
-import { useCategoriaViewModel } from "@/viewmodel/useCategoriaViewModel";
+import { makeCategoriaViewModel } from "@/di/categoriaFactory";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
 import {
@@ -26,7 +26,7 @@ const IMAGENS_PRODUTOS: Record<string, ImageSourcePropType> = {
 
 export default function CategoriaView() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const [state, actions] = useCategoriaViewModel(Array.isArray(id) ? id[0] : id);
+  const [state, actions] = makeCategoriaViewModel(Array.isArray(id) ? id[0] : id);
   const { titulo, produtos, carregando } = state;
   const { formatarPreco, abrirProduto, voltar } = actions;
 
